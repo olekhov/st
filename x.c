@@ -266,6 +266,8 @@ static char *opt_title = NULL;
 
 static int oldbutton = 3; /* button event on startup: 3 = release */
 
+#define CLIPBOARD_ATOM "PRIMARY"
+
 void
 clipcopy(const Arg *dummy)
 {
@@ -276,7 +278,7 @@ clipcopy(const Arg *dummy)
 
 	if (xsel.primary != NULL) {
 		xsel.clipboard = xstrdup(xsel.primary);
-		clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
+		clipboard = XInternAtom(xw.dpy, CLIPBOARD_ATOM, 0);
 		XSetSelectionOwner(xw.dpy, clipboard, xw.win, CurrentTime);
 	}
 }
@@ -286,7 +288,7 @@ clippaste(const Arg *dummy)
 {
 	Atom clipboard;
 
-	clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
+	clipboard = XInternAtom(xw.dpy, CLIPBOARD_ATOM, 0);
 	XConvertSelection(xw.dpy, clipboard, xsel.xtarget, clipboard,
 			xw.win, CurrentTime);
 }
@@ -500,7 +502,7 @@ void
 propnotify(XEvent *e)
 {
 	XPropertyEvent *xpev;
-	Atom clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
+	Atom clipboard = XInternAtom(xw.dpy, CLIPBOARD_ATOM, 0);
 
 	xpev = &e->xproperty;
 	if (xpev->state == PropertyNewValue &&
@@ -642,7 +644,7 @@ selrequest(XEvent *e)
 		 * xith XA_STRING non ascii characters may be incorrect in the
 		 * requestor. It is not our problem, use utf8.
 		 */
-		clipboard = XInternAtom(xw.dpy, "CLIPBOARD", 0);
+		clipboard = XInternAtom(xw.dpy, CLIPBOARD_ATOM, 0);
 		if (xsre->selection == XA_PRIMARY) {
 			seltext = xsel.primary;
 		} else if (xsre->selection == clipboard) {
